@@ -41,7 +41,6 @@ let handleUserLogin = async (email, password) => {
 };
 
 let isUserEmail = async (email) => {
-  console.log(email);
   return new Promise(async (resolve, reject) => {
     try {
       (await db.User.findOne({
@@ -89,23 +88,24 @@ let createNewUser = async (data) => {
           errCode: 1,
           errMessage: "Your email is already in userd, Plz try another email!",
         });
-      }
-      let hashPaswordFormBcrypt = await hashUserPassword(data.password);
+      } else {
+        let hashPaswordFormBcrypt = await hashUserPassword(data.password);
 
-      await db.User.create({
-        email: data.email,
-        password: hashPaswordFormBcrypt,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        address: data.address,
-        phoneNumber: data.phoneNumber,
-        gender: data.gender === "1" ? true : false,
-        roleId: data.roleId,
-      });
-      resolve({
-        errCode: 0,
-        message: "OK",
-      });
+        await db.User.create({
+          email: data.email,
+          password: hashPaswordFormBcrypt,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          address: data.address,
+          phoneNumber: data.phoneNumber,
+          gender: data.gender === "1" ? true : false,
+          roleId: data.roleId,
+        });
+        resolve({
+          errCode: 0,
+          message: "OK",
+        });
+      }
     } catch (e) {
       reject(e);
     }
